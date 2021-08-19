@@ -1,0 +1,27 @@
+apply plugin: 'org.jetbrains.kotlin.jvm'
+apply plugin: 'com.squareup.anvil'
+apply plugin: 'org.jetbrains.kotlin.kapt'
+
+if (rootProject.ext.generateDaggerFactoriesWithAnvil) {
+  anvil {
+    generateDaggerFactories = true
+  }
+} else {
+//  apply plugin: 'org.jetbrains.kotlin.kapt'
+
+  dependencies {
+    kapt deps.dagger2.compiler
+  }
+}
+
+dependencies {
+  api project(':scopes')
+  api deps.dagger2.dagger
+
+  api "com.squareup.anvil:compiler-api:2.3.3"
+  api "com.squareup.anvil:compiler-utils:2.3.3"
+
+//  // Optional:
+  compileOnly "com.google.auto.service:auto-service-annotations:1.0"
+  kapt "com.google.auto.service:auto-service:1.0"
+}

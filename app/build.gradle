@@ -1,0 +1,69 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+    id 'com.squareup.anvil'
+}
+
+android {
+    compileSdkVersion 30
+
+    defaultConfig {
+        applicationId "com.squareup.anvil.sample"
+        minSdkVersion 24
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0.0"
+
+        testInstrumentationRunner "com.squareup.anvil.sample.TestRunner"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        warningsAsErrors true
+    }
+
+    variantFilter { variant ->
+        //noinspection UnnecessaryQualifiedReference
+        if (variant.buildType.name == com.android.builder.core.BuilderConstants.RELEASE) {
+            variant.setIgnore(true)
+        }
+    }
+}
+
+dependencies {
+    implementation project(':library')
+    implementation project(':scopes')
+
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.core
+    implementation deps.androidx.material
+    implementation deps.dagger2.dagger
+
+    kapt deps.dagger2.compiler
+
+    testImplementation deps.junit
+    testImplementation deps.truth
+
+    androidTestImplementation deps.androidx.test.core
+    androidTestImplementation deps.androidx.test.espresso.core
+    androidTestImplementation deps.androidx.test.junit
+    androidTestImplementation deps.androidx.test.rules
+    androidTestImplementation deps.androidx.test.runner
+    androidTestImplementation deps.junit
+    androidTestImplementation deps.truth
+
+    kaptAndroidTest deps.dagger2.compiler
+}
+
+// Keep that here for testing purposes. The Anvil Gradle plugin will set this flag to false again,
+// otherwise Android projects will fail to build. This serves kinda as an integration test.
+pluginManager.withPlugin('kotlin-kapt') {
+    kapt {
+        correctErrorTypes = true
+    }
+}
